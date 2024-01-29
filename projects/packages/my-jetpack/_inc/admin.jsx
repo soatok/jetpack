@@ -71,6 +71,10 @@ const MyJetpack = () => {
 							<Route path={ MyJetpackRoutes.AddJetpackAI } element={ <JetpackAiInterstitial /> } />
 							<Route path={ MyJetpackRoutes.AddExtras } element={ <ExtrasInterstitial /> } />
 							<Route path={ MyJetpackRoutes.AddProtect } element={ <ProtectInterstitial /> } />
+							<Route
+								path={ MyJetpackRoutes.AddFirewall }
+								element={ <ProtectInterstitial postActivationUrl="firewall" /> }
+							/>
 							<Route path={ MyJetpackRoutes.AddScan } element={ <ScanInterstitial /> } />
 							<Route path={ MyJetpackRoutes.AddSocial } element={ <SocialInterstitial /> } />
 							<Route path={ MyJetpackRoutes.AddSearch } element={ <SearchInterstitial /> } />
