@@ -31,6 +31,7 @@ const ManageConnectionDialog = props => {
 		context,
 		connectedUser,
 		connectedSiteId,
+		userIsAdmin,
 		isOpen,
 		onClose,
 	} = props;
@@ -82,20 +83,24 @@ const ManageConnectionDialog = props => {
 									'jetpack'
 								) }
 							</Text>
-							<ManageConnectionActionCard
-								title={ __( 'Transfer ownership to another admin', 'jetpack' ) }
-								link={ getRedirectUrl( 'calypso-settings-manage-connection', {
-									site: window?.myJetpackInitialState?.siteSuffix,
-								} ) }
-								key="transfer"
-								action="transfer"
-							/>
-							<ManageConnectionActionCard
-								title={ __( 'Disconnect Jetpack', 'jetpack' ) }
-								onClick={ openDisconnectDialog }
-								key="disconnect"
-								action="disconnect"
-							/>
+							{ userIsAdmin && (
+								<ManageConnectionActionCard
+									title={ __( 'Transfer ownership to another admin', 'jetpack' ) }
+									link={ getRedirectUrl( 'calypso-settings-manage-connection', {
+										site: window?.myJetpackInitialState?.siteSuffix,
+									} ) }
+									key="transfer"
+									action="transfer"
+								/>
+							) }
+							{ userIsAdmin && (
+								<ManageConnectionActionCard
+									title={ __( 'Disconnect Jetpack', 'jetpack' ) }
+									onClick={ openDisconnectDialog }
+									key="disconnect"
+									action="disconnect"
+								/>
+							) }
 						</div>
 						<HelpFooter onClose={ onClose } />
 					</Modal>
