@@ -99,6 +99,8 @@ const ConnectionStatusCard = props => {
 		[ onDisconnected, setConnectionStatus ]
 	);
 
+	const userIsAdmin = !! window?.myJetpackInitialState?.userIsAdmin;
+
 	return (
 		<div className={ styles[ 'connection-status-card' ] }>
 			<H3>{ title }</H3>
@@ -189,6 +191,7 @@ const ConnectionStatusCard = props => {
 			</div>
 
 			<ManageConnectionDialog
+				userIsAdmin={ userIsAdmin }
 				apiRoot={ apiRoot }
 				apiNonce={ apiNonce }
 				onDisconnected={ onDisconnectedCallback }
