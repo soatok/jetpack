@@ -1,0 +1,4 @@
+Significance: patch
+Type: changed
+
+Updated connection management modal to account for non admin permissions
