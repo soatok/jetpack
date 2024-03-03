@@ -2,7 +2,8 @@
  * External dependencies
  */
 import { AdminPage, Button, Col, Container, Text } from '@automattic/jetpack-components';
-import { createInterpolateElement } from '@wordpress/element';
+import { useDispatch } from '@wordpress/data';
+import { createInterpolateElement, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
 import React, { useCallback, useEffect } from 'react';
@@ -16,6 +17,7 @@ import { getMyJetpackWindowInitialState } from '../../data/utils/get-my-jetpack-
 import useAnalytics from '../../hooks/use-analytics';
 import { useGoBack } from '../../hooks/use-go-back';
 import useMyJetpackNavigate from '../../hooks/use-my-jetpack-navigate';
+import { STORE_ID } from '../../state/store';
 import GoBackLink from '../go-back-link';
 import ProductDetailCard from '../product-detail-card';
 import ProductDetailTable from '../product-detail-table';
@@ -352,17 +354,47 @@ export function ProtectInterstitial() {
  * @returns {object} FirewallInterstitial react component.
  */
 export function FirewallInterstitial() {
-	const {
-		detail: { manageUrl },
-	} = useProduct( 'protect' );
+	const { detail } = useProduct( 'protect' );
+	const { setProduct } = useDispatch( STORE_ID );
 
-	return (
-		<ProductInterstitial
-			slug="protect"
-			installsPlugin={ true }
-			postActivationUrl={ `${ manageUrl }#/firewall` }
-		/>
-	);
+	// Cache the original redirect URLs for restoration when the component is unmounted.
+	const postActivationUrlRef = useRef( detail.postActivationUrl );
+	const postCheckoutUrlRef = useRef( detail.postCheckoutUrl );
+
+	// Append the firewall-specific landing page hash to the Protect product's post activation URL.
+	useEffect( () => {
+		const append = '#/firewall';
+		const originalPostActivationUrl = postActivationUrlRef.current;
+		const originalPostCheckoutUrl = postCheckoutUrlRef.current;
+
+		if (
+			! detail.postActivationUrl.includes( append ) ||
+			! detail.postCheckoutUrl.includes( append )
+		) {
+			setProduct( {
+				...detail,
+				postActivationUrl: detail.postActivationUrl + append,
+				postCheckoutUrl: detail.postCheckoutUrl + append,
+			} );
+		}
+
+		// Restore the default Protect post activation URL when the component is unmounted.
+		return () => {
+			if (
+				detail.postActivationUrl === originalPostActivationUrl &&
+				detail.postCheckoutUrl === originalPostCheckoutUrl
+			) {
+				return;
+			}
+			setProduct( {
+				...detail,
+				postActivationUrl: originalPostActivationUrl,
+				postCheckoutUrl: originalPostCheckoutUrl,
+			} );
+		};
+	}, [ detail, setProduct ] );
+
+	return <ProductInterstitial slug="protect" installsPlugin={ true } />;
 }
 
 /**
