@@ -2,8 +2,7 @@
  * External dependencies
  */
 import { AdminPage, Button, Col, Container, Text } from '@automattic/jetpack-components';
-import { useDispatch } from '@wordpress/data';
-import { createInterpolateElement, useRef } from '@wordpress/element';
+import { createInterpolateElement } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
 import React, { useCallback, useEffect } from 'react';
@@ -17,7 +16,6 @@ import { getMyJetpackWindowInitialState } from '../../data/utils/get-my-jetpack-
 import useAnalytics from '../../hooks/use-analytics';
 import { useGoBack } from '../../hooks/use-go-back';
 import useMyJetpackNavigate from '../../hooks/use-my-jetpack-navigate';
-import { STORE_ID } from '../../state/store';
 import GoBackLink from '../go-back-link';
 import ProductDetailCard from '../product-detail-card';
 import ProductDetailTable from '../product-detail-table';
@@ -47,6 +45,7 @@ import videoPressImage from './videopress.png';
  * @param {number} [props.quantity]              - The quantity of the product to purchase
  * @param {number} [props.directCheckout]        - Whether to go straight to the checkout page, e.g. for products with usage tiers
  * @param {boolean} [props.highlightLastFeature] - Whether to highlight the last feature in the list of features
+ * @param {string} [props.customRedirectUrl]     - Overrides the product's post-activation and post-checkout URLs
  * @returns {object}                               ProductInterstitial react component.
  */
 export default function ProductInterstitial( {
@@ -63,6 +62,7 @@ export default function ProductInterstitial( {
 	quantity = null,
 	directCheckout = false,
 	highlightLastFeature = false,
+	customRedirectUrl = null,
 } ) {
 	const { detail } = useProduct( slug );
 	const { activate, isPending: isActivating } = useActivate( slug );
@@ -116,9 +116,9 @@ export default function ProductInterstitial( {
 
 	const clickHandler = useCallback(
 		( checkout, product, tier ) => {
-			let postCheckoutUrl = product?.postCheckoutUrl
-				? product?.postCheckoutUrl
-				: myJetpackCheckoutUri;
+			// let postCheckoutUrl = product?.postCheckoutUrl
+			// 	? product?.postCheckoutUrl
+			// 	: myJetpackCheckoutUri;
 
 			if ( product?.isBundle || directCheckout ) {
 				// Get straight to the checkout page.
@@ -130,10 +130,9 @@ export default function ProductInterstitial( {
 				{ productId: slug },
 				{
 					onSettled: ( { productId: activatedProduct } ) => {
-						postCheckoutUrl = activatedProduct?.post_checkout_url
-							? activatedProduct.post_checkout_url
-							: myJetpackCheckoutUri;
-						const postActivationUrl = product?.postActivationUrl;
+						const postCheckoutUrl =
+							customRedirectUrl || activatedProduct?.post_checkout_url || myJetpackCheckoutUri;
+						const postActivationUrl = customRedirectUrl || product?.postActivationUrl;
 						const hasRequiredPlan = tier
 							? product?.hasRequiredTier?.[ tier ]
 							: product?.hasRequiredPlan;
@@ -167,7 +166,14 @@ export default function ProductInterstitial( {
 				}
 			);
 		},
-		[ directCheckout, activate, navigateToMyJetpackOverviewPage, slug, myJetpackCheckoutUri ]
+		[
+			directCheckout,
+			activate,
+			navigateToMyJetpackOverviewPage,
+			slug,
+			myJetpackCheckoutUri,
+			customRedirectUrl,
+		]
 	);
 
 	return (
@@ -355,46 +361,14 @@ export function ProtectInterstitial() {
  */
 export function FirewallInterstitial() {
 	const { detail } = useProduct( 'protect' );
-	const { setProduct } = useDispatch( STORE_ID );
 
-	// Cache the original redirect URLs for restoration when the component is unmounted.
-	const postActivationUrlRef = useRef( detail.postActivationUrl );
-	const postCheckoutUrlRef = useRef( detail.postCheckoutUrl );
-
-	// Append the firewall-specific landing page hash to the Protect product's post activation URL.
-	useEffect( () => {
-		const append = '#/firewall';
-		const originalPostActivationUrl = postActivationUrlRef.current;
-		const originalPostCheckoutUrl = postCheckoutUrlRef.current;
-
-		if (
-			! detail.postActivationUrl.includes( append ) ||
-			! detail.postCheckoutUrl.includes( append )
-		) {
-			setProduct( {
-				...detail,
-				postActivationUrl: detail.postActivationUrl + append,
-				postCheckoutUrl: detail.postCheckoutUrl + append,
-			} );
-		}
-
-		// Restore the default Protect post activation URL when the component is unmounted.
-		return () => {
-			if (
-				detail.postActivationUrl === originalPostActivationUrl &&
-				detail.postCheckoutUrl === originalPostCheckoutUrl
-			) {
-				return;
-			}
-			setProduct( {
-				...detail,
-				postActivationUrl: originalPostActivationUrl,
-				postCheckoutUrl: originalPostCheckoutUrl,
-			} );
-		};
-	}, [ detail, setProduct ] );
-
-	return <ProductInterstitial slug="protect" installsPlugin={ true } />;
+	return (
+		<ProductInterstitial
+			slug="protect"
+			installsPlugin={ true }
+			customRedirectUrl={ detail.postActivationUrl + '#/firewall' }
+		/>
+	);
 }
 
 /**
