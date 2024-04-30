@@ -26,7 +26,7 @@ class REST_Endpoints {
 	 */
 	public static function initialize_rest_api() {
 
-		// Confirm that a site in identity crisis should be in staging mode.
+		// Confirm that a site in identity crisis should be in safe mode.
 		register_rest_route(
 			'jetpack/v4',
 			'/identity-crisis/confirm-safe-mode',
