@@ -523,7 +523,7 @@
             "dist": {
                 "type": "path",
                 "url": "../../packages/connection",
-                "reference": "ef847deea958cb05bab52cbc11f924f5b8eab365"
+                "reference": "bba49ffca10ebb3868ca3db25ddbf34c5eb72120"
             },
             "require": {
                 "automattic/jetpack-a8c-mc-stats": "@dev",
@@ -559,6 +559,12 @@
                 },
                 "branch-alias": {
                     "dev-trunk": "2.8.x-dev"
+                },
+                "dependencies": {
+                    "test-only": [
+                        "packages/licensing",
+                        "packages/sync"
+                    ]
                 }
             },
             "autoload": {
@@ -1391,8 +1397,7 @@
             "dist": {
                 "type": "path",
                 "url": "../../packages/status",
-                "reference": "ab1eb569c2457fd51b5eccc40794686ccae7fe0d"
-                "reference": "eee141b034cb8d535ac9466d8e0434c2e5053aa6"
+                "reference": "a7deb2342a08bd31875bb222918e7c3cdc168dd9"
             },
             "require": {
                 "automattic/jetpack-constants": "@dev",
@@ -1419,14 +1424,6 @@
                 },
                 "branch-alias": {
                     "dev-trunk": "3.1.x-dev"
-                    "dev-trunk": "3.0.x-dev"
-                },
-                "dependencies": {
-                    "test-only": [
-                        "packages/connection",
-                        "packages/identity-crisis",
-                        "packages/plans"
-                    ]
                 }
             },
             "autoload": {
@@ -1456,7 +1453,7 @@
             "dist": {
                 "type": "path",
                 "url": "../../packages/sync",
-                "reference": "6c08210f41958cbad899f8cf8f92435b91eaa932"
+                "reference": "4415298e32ada09dc9880eb8d4ec5b979efa4889"
             },
             "require": {
                 "automattic/jetpack-connection": "@dev",
@@ -1490,7 +1487,7 @@
                     "link-template": "https://github.com/Automattic/jetpack-sync/compare/v${old}...v${new}"
                 },
                 "branch-alias": {
-                    "dev-trunk": "2.15.x-dev"
+                    "dev-trunk": "2.16.x-dev"
                 },
                 "dependencies": {
                     "test-only": [
