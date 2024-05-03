@@ -975,7 +975,6 @@
                 "type": "path",
                 "url": "../../packages/status",
                 "reference": "ab1eb569c2457fd51b5eccc40794686ccae7fe0d"
-                "reference": "eee141b034cb8d535ac9466d8e0434c2e5053aa6"
             },
             "require": {
                 "automattic/jetpack-constants": "@dev",
@@ -1002,7 +1001,6 @@
                 },
                 "branch-alias": {
                     "dev-trunk": "3.1.x-dev"
-                    "dev-trunk": "3.0.x-dev"
                 },
                 "dependencies": {
                     "test-only": [
