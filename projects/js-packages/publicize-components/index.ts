@@ -7,6 +7,7 @@ export { default as Connection } from './src/components/connection';
 export { default as ConnectionVerify } from './src/components/connection-verify';
 export { default as ConnectButton } from './src/components/connect-button';
 export { default as Form } from './src/components/form';
+export { default as ServiceConnection } from './src/components/service-connection';
 export { default as SocialPreviewsModal } from './src/components/social-previews/modal';
 export { default as SocialPreviewsPanel } from './src/components/social-previews/panel';
 export { default as SocialImageGeneratorPanel } from './src/components/social-image-generator/panel';

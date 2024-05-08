@@ -6,8 +6,8 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Icon, chevronDown } from '@wordpress/icons';
 import classNames from 'classnames';
 import { store } from '../../social-store';
-import ConnectButton from '../connect-button';
 import { ConnectPage } from './connect-page/connect-page';
+import ServiceConnection from '../service-connection';
 import { getSupportedConnections } from './constants';
 import styles from './style.module.scss';
 
@@ -94,9 +94,8 @@ const AddConnectionModal = ( { onCloseModal } ) => {
 								</td>
 								<td>
 									<div className={ styles[ 'column-actions' ] }>
-										<ConnectButton
-											connectUrl={ service.connectUrl }
-											onClose={ res => console.log( res ) }
+										<ServiceConnection
+											service={ service }
 											key={ service.name }
 											size={ isSmall ? 'small' : 'normal' }
 										/>
